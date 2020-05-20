@@ -1,22 +1,9 @@
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D
 from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow.keras.optimizers import Adam
 import prepare_data as pd
 import numpy
-import math
-
-
-def psnr(target, ref):
-    # assume RGB image
-    target_data = numpy.array(target, dtype=float)
-    ref_data = numpy.array(ref, dtype=float)
-
-    diff = ref_data - target_data
-    diff = diff.flatten("C")
-
-    rmse = math.sqrt(numpy.mean(diff ** 2.0))
-
-    return 20 * math.log10(255.0 / rmse)
 
 
 def model():
@@ -89,17 +76,19 @@ def train():
 
 def predict():
     srcnn_model = predict_model()
-    srcnn_model.load_weights("3051crop_weight_200.h5")
-    IMG_NAME = "/home/mark/Engineer/SR/data/Set14/flowers.bmp"
-    INPUT_NAME = "input2.jpg"
-    OUTPUT_NAME = "pre2.jpg"
+    srcnn_model.load_weights("SRCNN_check.h5")
+    IMG_NAME = "./train/im_012.png"
+    INPUT_NAME = "input.jpg"
+    OUTPUT_NAME = "predict.jpg"
 
     import cv2
 
     img = cv2.imread(IMG_NAME, cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
     shape = img.shape
-    Y_img = cv2.resize(img[:, :, 0], (shape[1] / 2, shape[0] / 2), cv2.INTER_CUBIC)
+    Y_img = cv2.resize(
+        img[:, :, 0], (int(shape[1] / 2), int(shape[0] / 2)), cv2.INTER_CUBIC
+    )
     Y_img = cv2.resize(Y_img, (shape[1], shape[0]), cv2.INTER_CUBIC)
     img[:, :, 0] = Y_img
     img = cv2.cvtColor(img, cv2.COLOR_YCrCb2BGR)

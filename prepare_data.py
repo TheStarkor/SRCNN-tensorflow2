@@ -11,6 +11,8 @@ label_size = 20
 conv_side = 6
 scale = 2
 
+BLOCK_STEP = 16
+BLOCK_SIZE = 32
 
 def prepare_data(_path):
     names = os.listdir(_path)
@@ -61,17 +63,7 @@ def prepare_data(_path):
             label[i * Random_Crop + j, 0, :, :] = hr_patch[
                 conv_side:-conv_side, conv_side:-conv_side
             ]
-            # cv2.imshow("lr", lr_patch)
-            # cv2.imshow("hr", hr_patch)
-            # cv2.waitKey(0)
     return data, label
-
-
-BLOCK_STEP = 16
-BLOCK_SIZE = 32
-
-BLOCK_STEP = 16
-BLOCK_SIZE = 32
 
 
 def prepare_crop_data(_path):
@@ -120,11 +112,6 @@ def prepare_crop_data(_path):
 
 
 def write_hdf5(data, labels, output_filename):
-    """
-    This function is used to save image data and its label(s) to hdf5 file.
-    output_file.h5,contain data and label
-    """
-
     x = data.astype(numpy.float32)
     y = labels.astype(numpy.float32)
 
