@@ -19,7 +19,9 @@ $ main.py
 
 
 ## Results
-![results](https://user-images.githubusercontent.com/45455072/82464619-4138d800-9af9-11ea-88c4-dc9e40d0c6de.png)
+![set5](https://user-images.githubusercontent.com/45455072/82467489-ae01a180-9afc-11ea-9513-3b7ba455346f.png)  
+![set14](https://user-images.githubusercontent.com/45455072/82467631-d5586e80-9afc-11ea-8d90-8d274f4cd1e7.png)
+
 
 ## References
 [1] [MarkPrecursor/SRCNN-keras](https://github.com/MarkPrecursor/SRCNN-keras)
