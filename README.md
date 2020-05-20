@@ -1,6 +1,5 @@
 # SRCNN-tensorflow
-The original paper is [Learning a Deep Convolutional Network for Image Super-Resolution](https://arxiv.org/abs/1501.00092)  
-Dataset은 General-100[2], 자세한 내용은 아래 colab을 참고하세요.  
+The original paper is [Learning a Deep Convolutional Network for Image Super-Resolution](https://arxiv.org/abs/1501.00092). Dataset is General-100[2]
 ![SRCNN](https://user-images.githubusercontent.com/45455072/82465244-08e5c980-9afa-11ea-8db2-0458af007012.png)  
 
 ## Prerequisites
