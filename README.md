@@ -20,7 +20,7 @@ $ main.py
 
 ## Results
 ![set5](https://user-images.githubusercontent.com/45455072/82467489-ae01a180-9afc-11ea-9513-3b7ba455346f.png)
-![set14](https://user-images.githubusercontent.com/45455072/82467631-d5586e80-9afc-11ea-8d90-8d274f4cd1e7.png)
+![set14](https://user-images.githubusercontent.com/45455072/82467821-105aa200-9afd-11ea-93e1-738d3a467f11.png)
 
 
 ## References
