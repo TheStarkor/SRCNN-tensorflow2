@@ -1,124 +1,48 @@
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D
+from tensorflow.keras import backend as K
+from tensorflow.keras.models import Sequential, Model, load_model
+from tensorflow.keras.layers import Input, Dense, Input, Conv2D, Conv2DTranspose, MaxPooling2D, UpSampling2D, Lambda, Activation, Flatten, Add
+from tensorflow.keras.optimizers import Adam, SGD
+from tensorflow.keras.preprocessing.image import array_to_img, img_to_array, load_img,ImageDataGenerator
 from tensorflow.keras.callbacks import ModelCheckpoint
-from tensorflow.keras.optimizers import Adam
-import prepare_data as pd
-import numpy
 
+from data_generator import train_data_generator, test_data_generator
+from utils import psnr
+from model import srcnn
 
-def model():
-    SRCNN = Sequential()
-    SRCNN.add(
-        Conv2D(
-            128,
-            (9, 9),
-            kernel_initializer="glorot_uniform",
-            activation="relu",
-            padding="valid",
-            use_bias=True,
-            input_shape=(32, 32, 1),
-        )
-    )
-    SRCNN.add(
-        Conv2D(
-            64,
-            (3, 3),
-            kernel_initializer="glorot_uniform",
-            activation="relu",
-            padding="same",
-            use_bias=True,
-        )
-    )
-    SRCNN.add(
-        Conv2D(
-            1,
-            (5, 5),
-            kernel_initializer="glorot_uniform",
-            activation="linear",
-            padding="valid",
-            use_bias=True,
-        )
-    )
-    adam = Adam(lr=0.0003)
-    SRCNN.compile(
-        optimizer=adam, loss="mean_squared_error", metrics=["mean_squared_error"]
-    )
-    return SRCNN
+DATA_DIR='../src/'
+N_TRAIN_DATA=800
+N_TEST_DATA=100
+BATCH_SIZE=16
+FILE_PATH = 'srcnn.hdf5'
 
+train_data_generator=train_data_generator(
+   DATA_DIR,'DIV2K_train_HR', scale=4.0, batch_size=BATCH_SIZE
+)
 
-def train():
-    srcnn = model()
-    print(srcnn.summary())
-    data, label = pd.read_training_data("./train.h5")
-    val_data, val_label = pd.read_training_data("./test.h5")
+test_x,test_y=next(
+   test_data_generator(
+   DATA_DIR,'DIV2K_valid_HR', scale=4.0, batch_size=N_TEST_DATA, shuffle=False
+   )
+)
 
-    checkpoint = ModelCheckpoint(
-        "SRCNN_check.h5",
-        monitor="val_loss",
-        verbose=2,
-        save_best_only=True,
-        save_weights_only=False,
-        model="min",
-    )
-    callbacks_list = [checkpoint]
+model = srcnn()
 
-    srcnn.fit(
-        data,
-        label,
-        batch_size=128,
-        validation_data=(val_data, val_label),
-        callbacks=callbacks_list,
-        shuffle=True,
-        epochs=200,
-        verbose=2,
-    )
+model.summary()
 
+save_checkpoint = ModelCheckpoint(FILE_PATH, monitor='val_loss', verbose=1, \
+                             save_best_only=True, save_weights_only=False, \
+                             mode='auto', period=1)
 
-def predict():
-    srcnn_model = predict_model()
-    srcnn_model.load_weights("SRCNN_check.h5")
-    IMG_NAME = "./train/im_012.png"
-    INPUT_NAME = "input.jpg"
-    OUTPUT_NAME = "predict.jpg"
+model.compile(
+    loss='mean_squared_error',
+    optimizer= 'adam',
+    metrics=[psnr]
+)
 
-    import cv2
-
-    img = cv2.imread(IMG_NAME, cv2.IMREAD_COLOR)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
-    shape = img.shape
-    Y_img = cv2.resize(
-        img[:, :, 0], (int(shape[1] / 2), int(shape[0] / 2)), cv2.INTER_CUBIC
-    )
-    Y_img = cv2.resize(Y_img, (shape[1], shape[0]), cv2.INTER_CUBIC)
-    img[:, :, 0] = Y_img
-    img = cv2.cvtColor(img, cv2.COLOR_YCrCb2BGR)
-    cv2.imwrite(INPUT_NAME, img)
-
-    Y = numpy.zeros((1, img.shape[0], img.shape[1], 1), dtype=float)
-    Y[0, :, :, 0] = Y_img.astype(float) / 255.0
-    pre = srcnn_model.predict(Y, batch_size=1) * 255.0
-    pre[pre[:] > 255] = 255
-    pre[pre[:] < 0] = 0
-    pre = pre.astype(numpy.uint8)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
-    img[6:-6, 6:-6, 0] = pre[0, :, :, 0]
-    img = cv2.cvtColor(img, cv2.COLOR_YCrCb2BGR)
-    cv2.imwrite(OUTPUT_NAME, img)
-
-    # psnr calculation:
-    im1 = cv2.imread(IMG_NAME, cv2.IMREAD_COLOR)
-    im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2YCrCb)[6:-6, 6:-6, 0]
-    im2 = cv2.imread(INPUT_NAME, cv2.IMREAD_COLOR)
-    im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2YCrCb)[6:-6, 6:-6, 0]
-    im3 = cv2.imread(OUTPUT_NAME, cv2.IMREAD_COLOR)
-    im3 = cv2.cvtColor(im3, cv2.COLOR_BGR2YCrCb)[6:-6, 6:-6, 0]
-
-    print("bicubic:")
-    print(cv2.PSNR(im1, im2))
-    print("SRCNN:")
-    print(cv2.PSNR(im1, im3))
-
-
-if __name__ == "__main__":
-    train()
-    predict()
+model.fit_generator(
+    train_data_generator,
+    validation_data=(test_x,test_y),
+    steps_per_epoch=N_TRAIN_DATA//BATCH_SIZE,
+    epochs=200,
+    callbacks=[save_checkpoint]
+)
