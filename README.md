@@ -1,5 +1,8 @@
 # EDSR-tensorflow2
-Tensorflow 2 implementation of [Learning a Deep Convolutional Network for Image Super-Resolution](https://arxiv.org/abs/1501.00092).
+Tensorflow 2 implementation of [Learning a Deep Convolutional Network for Image Super-Resolution](https://arxiv.org/abs/1501.00092).  
+
+Most of the existing codes performed data augmentation using matlab, opencv, and numpy. This was replaced by tensorflow's ImageDataGenerator, and tensorflow 2's methods were used as a whole.
+
 ![SRCNN](https://user-images.githubusercontent.com/45455072/82465244-08e5c980-9afa-11ea-8db2-0458af007012.png)  
 
 ## Usage

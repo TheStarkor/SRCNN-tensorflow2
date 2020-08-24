@@ -49,7 +49,7 @@ if __name__ == "__main__":
 
     model.compile(loss="mean_squared_error", optimizer="adam", metrics=[psnr])
 
-    model.fit_generator(
+    model.fit(
         train_data_generator,
         validation_data=(test_x, test_y),
         steps_per_epoch=N_TRAIN_DATA // BATCH_SIZE,
