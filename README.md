@@ -4,7 +4,11 @@ Tensorflow 2 implementation of [Learning a Deep Convolutional Network for Image 
 
 ## Usage
 ```
-$ python main.py BATCH_SIZE=16 EPOCHS=200 N_TRAIN_TEST=800 N_TEST_DATA=100
+$ python main.py [-h] N_TRAIN_DATA N_TEST_DATA BATCH_SIZE EPOCHS 
+```
+DIV2K example
+```
+$ python main.py 800 100 16 200
 ```
 ### Prerequisites
 - Python 3.7
