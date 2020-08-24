@@ -19,9 +19,9 @@ $ python main.py 800 100 16 200
 ```
 EDSR-tensorflow2
 ├── main.py              // main program
-├── model.py             // edsr model
+├── model.py             // srcnn model
 ├── data_generator.py    // data augmentation
-└── utils.py             // psnr, mae
+└── utils.py             // psnr
 ```
 
 ## Sample Results
