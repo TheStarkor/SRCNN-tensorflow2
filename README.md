@@ -6,7 +6,7 @@ Tensorflow 2 implementation of [Learning a Deep Convolutional Network for Image 
 ```
 $ python main.py [-h] N_TRAIN_DATA N_TEST_DATA BATCH_SIZE EPOCHS 
 ```
-- DIV2K example
+### DIV2K example
 ```
 $ python main.py 800 100 16 200
 ```
@@ -29,4 +29,4 @@ EDSR-tensorflow2
 - test image set is Set14  
 
   
-![sample](https://user-images.githubusercontent.com/45455072/91014943-468c4e00-e625-11ea-891e-ed2210184ba7.png)
+![sample](https://user-images.githubusercontent.com/45455072/91018344-6d00b800-e62a-11ea-843a-361c6a954340.png)
