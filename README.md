@@ -6,7 +6,7 @@ Tensorflow 2 implementation of [Learning a Deep Convolutional Network for Image 
 ```
 $ python main.py [-h] N_TRAIN_DATA N_TEST_DATA BATCH_SIZE EPOCHS 
 ```
-DIV2K example
+- DIV2K example
 ```
 $ python main.py 800 100 16 200
 ```
